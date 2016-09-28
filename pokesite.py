@@ -3,8 +3,8 @@ from flask_compress import Compress
 import os, sys
 import logging
 import socket
-import SocketServer
-import BaseHTTPServer
+import socketserver
+import http.server
 import signal
 import time
 import json
@@ -75,8 +75,8 @@ def server_start():
         except socket.error as e:
             sys.stdout.write('socket error: {}\n'.format(e))
         self.rfile.close()
-    SocketServer.StreamRequestHandler.finish = patched_finish
-    BaseHTTPServer.HTTPServer.allow_reuse_address = False
+    socketserver.StreamRequestHandler.finish = patched_finish
+    http.server.HTTPServer.allow_reuse_address = False
 
     compress = Compress()
     app = Flask(__name__,template_folder=workdir+'/'+'webres',static_url_path='/static',static_folder=workdir+'/webres/static')

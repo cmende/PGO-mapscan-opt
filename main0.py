@@ -43,7 +43,7 @@ import res.maplib as mapl
 import ctypes
 
 import threading
-import Queue
+import queue
 
 import signal
 
@@ -894,7 +894,7 @@ def update_data():
             pass
 
 def lprint(message):
-    sys.stdout.write(u'{}\n'.format(message))
+    sys.stdout.write('{}\n'.format(message))
 
 def get_planid(plan):
     if plan['type'] == 'seikur0_s2':
@@ -1305,7 +1305,7 @@ def main():
             elif typecount[8]:
                 lprint('[-] Learning file contains {} undefined spawn points. It is advised to recreate it. This can happen, if you either run into softban issues during the scan (very high range/very high amount of workers/other reasons) or if you\'re not using enough workers for your range.'.format(typecount[8]))
 
-            infostring = u'ID: {}, {}, Range: {}, Start: {}'.format(wID, location_str, scanrange, datetime.fromtimestamp(starttime / 1000.0).strftime('%H:%M:%S'))
+            infostring = 'ID: {}, {}, Range: {}, Start: {}'.format(wID, location_str, scanrange, datetime.fromtimestamp(starttime / 1000.0).strftime('%H:%M:%S'))
 
             lprint('\n[+] Starting intelligent scan mode.\n')
             lprint('[+] Spawn point count: {}'.format(tallcount))
@@ -1328,7 +1328,7 @@ def main():
                 indx_sort -= 1
 
             lprint('[+] Catch up phase, 0/2 complete.')
-            lprint(u'[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
+            lprint('[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
             catchup = -1.5 * threadnum
             caughtup = False
             nextperc = percinterval
@@ -1354,14 +1354,14 @@ def main():
             lprint('[+] Phase complete: 100 %')
 
             lprint('\n[+] Catch up phase, 1/2 complete.')
-            lprint(u'[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
+            lprint('[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
 
             while not caughtup or vleft > 0:
                 timediff = (all_sort[indx_sort][0] - get_time() - time_hb * 1000) % 3600000
                 if timediff < 2*time_1q:
                     if not caughtup:
                         lprint('\n[+] Catch up phase 2/2 complete. Map is now live.')
-                        lprint(u'[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
+                        lprint('[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
                         caughtup = True
                         tries = 3
                         actT = get_time()
@@ -1403,7 +1403,7 @@ def main():
                     indx_sort += 1
 
             lprint('\n[+] Catch up phase, cleanup finished.')
-            lprint(u'[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
+            lprint('[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
 
             if not silent and not verbose:
                 lprint('[+] Switching to silent mode.\n')
@@ -1427,7 +1427,7 @@ def main():
 
                     list_unique.intersection_update(list_seen)
                     list_seen.clear()
-                    lprint(u'\n[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
+                    lprint('\n[+] Time: {}, {}\n'.format(datetime.now().strftime('%H:%M:%S'), infostring))
 
 #########################################################################
 #########################################################################
@@ -1461,7 +1461,7 @@ def main():
             lprint('[+] If it\'s higher than 600 s (720 s, if you feel lucky), consider adding more workers or reducing the range.\n')
 
             starttime = get_time()
-            infostring = u'ID: {}, {}, Scan Interval: {} s, Range: {}, Start: {}'.format(wID, location_str, scaninterval, scanrange, datetime.fromtimestamp(starttime / 1000.0).strftime('%H:%M:%S'))
+            infostring = 'ID: {}, {}, Scan Interval: {} s, Range: {}, Start: {}'.format(wID, location_str, scaninterval, scanrange, datetime.fromtimestamp(starttime / 1000.0).strftime('%H:%M:%S'))
             ##################################################################################################################################################
             while True:
                 pres_runs += 1
@@ -1469,7 +1469,7 @@ def main():
                 nextperc = percinterval
                 nowtime = get_time()
 
-                lprint(u'\n[+] Run #{}, Time: {}, {}\n'.format(pres_runs, datetime.fromtimestamp(nowtime / 1000.0).strftime('%H:%M:%S'), infostring))
+                lprint('\n[+] Run #{}, Time: {}, {}\n'.format(pres_runs, datetime.fromtimestamp(nowtime / 1000.0).strftime('%H:%M:%S'), infostring))
                 for this_loc in all_loc:
                     addlocation.put(this_loc)
                     if (100.0 * pres_curR / maxR) >= nextperc:
@@ -1625,7 +1625,7 @@ def main():
                 newthread.daemon = True
                 newthread.start()
 
-            addhookup = Queue.Queue(threadnum)
+            addhookup = queue.Queue(threadnum)
             for a in range(0,num_hookers):
                 addhooker()
             while True:
@@ -1664,7 +1664,7 @@ def main():
             fpath_log = '{}/res/logs/spawns{}.txt'.format(workdir, wID)
             POKEMONS = json.load(open('{}/webres/static/{}.json'.format(workdir, language)))
 
-            statheader = u'Name\tid\tSpawnID\tlat\tlng\tspawnTime\tTime\tTime2Hidden\tencounterID\n'
+            statheader = 'Name\tid\tSpawnID\tlat\tlng\tspawnTime\tTime\tTime2Hidden\tencounterID\n'
 
             reappear_texts = ('\n15m later back for 15m','\n15m later back for 30m','\n30m later back for 15m')
             reappear_ind = (0,1,0,2)
@@ -1724,10 +1724,10 @@ def main():
                             if mod_spawntime == 0:
                                 mod_spawntime = wild.last_modified_timestamp_ms + mod_tth - time_1q
 
-                            f.write(u'{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(POKEMONS[wild.pokemon_data.pokemon_id], wild.pokemon_data.pokemon_id, spawnIDint, wild.latitude, wild.longitude, mod_spawntime,
+                            f.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(POKEMONS[wild.pokemon_data.pokemon_id], wild.pokemon_data.pokemon_id, spawnIDint, wild.latitude, wild.longitude, mod_spawntime,
                                                                                   wild.last_modified_timestamp_ms, mod_tth, wild.encounter_id))
                             if addinfo:
-                                f.write(u'{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(POKEMONS[wild.pokemon_data.pokemon_id], wild.pokemon_data.pokemon_id, spawnIDint, wild.latitude, wild.longitude, mod_spawntime_2nd,
+                                f.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(POKEMONS[wild.pokemon_data.pokemon_id], wild.pokemon_data.pokemon_id, spawnIDint, wild.latitude, wild.longitude, mod_spawntime_2nd,
                                                                                       mod_spawntime_2nd+finished_ms, addinfo_phase_sec[addinfo]-finished_ms, wild.encounter_id))
                             data_buffer.append([wild.pokemon_data.pokemon_id, spawnIDint, wild.latitude, wild.longitude, int(round((wild.last_modified_timestamp_ms + mod_tth + addinfo_phase_sec[addinfo] + addinfo_pausetime[addinfo]) / 1000.0)) ,addinfo])
                             if not silent:
@@ -1738,7 +1738,7 @@ def main():
                                 difflng = diff.lng().degrees
                                 distance = int(origin_ll.get_distance(other_ll).radians * EARTH_Rrect)
                                 direction = (('N' if difflat >= 0 else 'S') if abs(difflat) > 1e-4 else '') + (('E' if difflng >= 0 else 'W') if abs(difflng) > 1e-4 else '')
-                                lprint(u'[+] ({}) {} visible for {} seconds ({}m {} from you)'.format(wild.pokemon_data.pokemon_id, POKEMONS[wild.pokemon_data.pokemon_id], int(mod_tth / 1000.0), distance, direction))
+                                lprint('[+] ({}) {} visible for {} seconds ({}m {} from you)'.format(wild.pokemon_data.pokemon_id, POKEMONS[wild.pokemon_data.pokemon_id], int(mod_tth / 1000.0), distance, direction))
 
                             hookdata = {"type": "pokemon","message": {"encounter_id": wild.encounter_id,"spawnpoint_id": spawnIDint,"pokemon_id": wild.pokemon_data.pokemon_id,"latitude": wild.latitude,"longitude": wild.longitude,"disappear_time": int((wild.last_modified_timestamp_ms + mod_tth)/1000.0),"last_modified_time": wild.last_modified_timestamp_ms,"time_until_hidden_ms": mod_tth, 'respawn_info': addinfo}}
                             addhook.put(hookdata)
@@ -1746,11 +1746,11 @@ def main():
                                 if add_location_name:
                                     try:
                                         location = format_address(geolocator.reverse('{},{}'.format(wild.latitude, wild.longitude),language=lang_code).address, 4)
-                                        notification_text = u"{} @ {}".format(POKEMONS[wild.pokemon_data.pokemon_id], location)
+                                        notification_text = "{} @ {}".format(POKEMONS[wild.pokemon_data.pokemon_id], location)
                                     except:
-                                        notification_text = u'{} found!'.format(POKEMONS[wild.pokemon_data.pokemon_id])
+                                        notification_text = '{} found!'.format(POKEMONS[wild.pokemon_data.pokemon_id])
                                 else:
-                                    notification_text = u'{} found!'.format(POKEMONS[wild.pokemon_data.pokemon_id])
+                                    notification_text = '{} found!'.format(POKEMONS[wild.pokemon_data.pokemon_id])
                                 disappear_time = datetime.fromtimestamp(int((wild.last_modified_timestamp_ms + mod_tth) / 1000.0)).strftime("%H:%M:%S")
                                 time_text = 'disappears at: {} ({}m)'.format(disappear_time, mod_tth / 60000)
                                 if addinfo:
@@ -1779,7 +1779,7 @@ def main():
 
                                 for telegram in telegrams:
                                     try:
-                                        telebot.sendMessage(chat_id=telegram, text=u'<b>{}</b>\n{}'.format(notification_text,time_text), parse_mode='HTML', disable_web_page_preview=False, disable_notification=False)
+                                        telebot.sendMessage(chat_id=telegram, text='<b>{}</b>\n{}'.format(notification_text,time_text), parse_mode='HTML', disable_web_page_preview=False, disable_notification=False)
                                         telebot.sendLocation(chat_id=telegram, latitude=wild.latitude, longitude=wild.longitude, disable_notification=False)
                                     except Exception as e:
                                         lprint('[-] Connection Error during Telegram, error: {}'.format(e))
@@ -1813,12 +1813,12 @@ def main():
     list_seen = set([])
     list_unique = set([])
 
-    addpokemon = Queue.Queue(threadnum)
-    synch_li = Queue.Queue(threadnum)
-    addlocation = Queue.Queue(threadnum)
-    addspawns = Queue.Queue(threadnum)
-    addforts = Queue.Queue(threadnum)
-    addhook = Queue.Queue(threadnum*3)
+    addpokemon = queue.Queue(threadnum)
+    synch_li = queue.Queue(threadnum)
+    addlocation = queue.Queue(threadnum)
+    addspawns = queue.Queue(threadnum)
+    addforts = queue.Queue(threadnum)
+    addhook = queue.Queue(threadnum*3)
 
     #########################################################################
 

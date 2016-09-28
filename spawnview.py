@@ -2,8 +2,8 @@ from flask import Flask, render_template, g, request, jsonify
 from flask_compress import Compress
 import os, sys
 import socket
-import SocketServer
-import BaseHTTPServer
+import socketserver
+import http.server
 import signal
 from s2sphere import CellId, LatLng, Cell
 import res.maplib as mapl
@@ -25,8 +25,8 @@ def patched_finish(self):
         sys.stdout.write('socket error: {}\n'.format(e))
     self.rfile.close()
 
-SocketServer.StreamRequestHandler.finish = patched_finish
-BaseHTTPServer.HTTPServer.allow_reuse_address = False
+socketserver.StreamRequestHandler.finish = patched_finish
+http.server.HTTPServer.allow_reuse_address = False
 
 def server_start():
     list_plans = []

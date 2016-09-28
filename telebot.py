@@ -23,7 +23,7 @@ with open('{}/res/telebotsettings.json'.format(workdir)) as f:
 ignored_by_default = telecfg["ignored_by_default"]
 
 # Support the old ignored string to array
-if type(ignored_by_default) == unicode:
+if type(ignored_by_default) == str:
     print(time.strftime('[%H:%M:%S] ' + '[!] Warning, the ignored_by_default setting in telebotsettings.json should be now a array like [1,2,3] instead of a string like "1,2,3"'))
     sys.exit()
 
@@ -65,7 +65,7 @@ if (language == "spanish"):
                 "radius_button": "Radio: [{}m]",
                 "check_radius": "Puedes ver tu radio actual aqui https://www.freemaptools.com/radius-around-point.htm?clat={}&clng={}&r={}&lc=FFFFFF&lw=1&fc=00FF00&mt=r&fs=true",
                 "home": "Volver al menu principal",
-                "ignored_intro": u"Aqui tienes una lista de tus notificaciones de pokemon. Los pokemon con ✅ seran notificados y los pokemon con ❌ seran ignorados. Presiona para cambiar.",
+                "ignored_intro": "Aqui tienes una lista de tus notificaciones de pokemon. Los pokemon con ✅ seran notificados y los pokemon con ❌ seran ignorados. Presiona para cambiar.",
                 "returning_home": "De vuelta al menu principal",
                 "pokemon_ignored": "El pokemon #{0} {1} no sera notificado",
                 "pokemon_unignored": "El pokemon #{0} {1} sera notificado",
@@ -109,7 +109,7 @@ elif (language == "french"):
                 "radius_button": "Rayon: [{}m]",
                 "check_radius": "Vous pouvez voir votre rayon ici https://www.freemaptools.com/radius-around-point.htm?clat={}&clng={}&r={}&lc=FFFFFF&lw=1&fc=00FF00&mt=r&fs=true",
                 "home": "Menu principal",
-                "ignored_intro": u"Voici la liste des notifications. Les pokémons marqués d'un ✅ seront notifiés et les pokémons marqués d'un ❌ seront ignorés. Appuyez pour modifier.",
+                "ignored_intro": "Voici la liste des notifications. Les pokémons marqués d'un ✅ seront notifiés et les pokémons marqués d'un ❌ seront ignorés. Appuyez pour modifier.",
                 "returning_home": "Retour au menu principal",
                 "pokemon_ignored": "Le pokémon #{0} {1} ne sera pas notifié;",
                 "pokemon_unignored": "Le pokémon #{0} {1} sera notifié",
@@ -153,7 +153,7 @@ elif language == "dutch":
                 "radius_button": "Radius: [{}m]",
                 "check_radius": "U kan hier uw radius checken https://www.freemaptools.com/radius-around-point.htm?clat={}&clng={}&r={}&lc=FFFFFF&lw=1&fc=00FF00&mt=r&fs=true",
                 "home": "Terug naar hoofdmenu",
-                "ignored_intro": u"Hier is een lijst of alle pokemons, U krijgt notificaties van de pokemons gemarkeerd met ✅ en de pokemons gemarkeerd met ❌ worden genegeerd. Druk op de naam van de pokemon om de setting te veranderen.",
+                "ignored_intro": "Hier is een lijst of alle pokemons, U krijgt notificaties van de pokemons gemarkeerd met ✅ en de pokemons gemarkeerd met ❌ worden genegeerd. Druk op de naam van de pokemon om de setting te veranderen.",
                 "returning_home": "Terug naar het hoofdmenu",
                 "pokemon_ignored": "Pokemon #{0} {1} genegeerd",
                 "pokemon_unignored": "Pokemon #{0} {1} krijgt u notificaties van",
@@ -197,7 +197,7 @@ else:  # if(language == "english"):
                 "radius_button": "Radius: [{}m]",
                 "check_radius": "You can see your current radius here https://www.freemaptools.com/radius-around-point.htm?clat={}&clng={}&r={}&lc=FFFFFF&lw=1&fc=00FF00&mt=r&fs=true",
                 "home": "Go back to main menu",
-                "ignored_intro": u"Here you have a list of your pokemon notifications. The pokemon marked with ✅ will be notified and the pokemon with ❌ will be ignored. Press to toggle.",
+                "ignored_intro": "Here you have a list of your pokemon notifications. The pokemon marked with ✅ will be notified and the pokemon with ❌ will be ignored. Press to toggle.",
                 "returning_home": "Returned to main menu",
                 "pokemon_ignored": "Pokemon #{0} {1} won't be notified",
                 "pokemon_unignored": "Pokemon #{0} {1} will be notified",
@@ -282,9 +282,9 @@ def get_settings(id):
 def load_all_settings():
     cursor_telebot = db_telebot.cursor()
     for row in cursor_telebot.execute('SELECT id, notify, latitude, longitude, radius, ignored, nick, silence FROM users'):
-        user_settings[row[0]] = {'id': row[0], 'noti': row[1], 'lat': row[2], 'lng': row[3], 'radius': row[4], 'ignored': [] if row[5].encode("ascii", "ignore") == "" else map(int, row[5].encode("ascii", "ignore").split(",")), 'nick': row[6], 'silence': "" if row[7] is None else row[7]}
+        user_settings[row[0]] = {'id': row[0], 'noti': row[1], 'lat': row[2], 'lng': row[3], 'radius': row[4], 'ignored': [] if row[5].encode("ascii", "ignore") == "" else list(map(int, row[5].encode("ascii", "ignore").split(b","))), 'nick': row[6], 'silence': "" if row[7] is None else row[7]}
 
-symbols = {'pin': u'📌 ', 'list': u'📝 ', 'info': u'ℹ ', 'bell': u'🔔 ', 'bell_crossed': u'🔕 ' , 'bed': u'🛌 ', 'globe': u'🌍 ', 'home': u'🏠 ', 'silence': u'🗣 ', 'yes': u"✅ ", 'no': u'❌ ', 'reset': u'♻ ', 'check': u'☑ ', 'uncheck':  u'◼ '}
+symbols = {'pin': '📌 ', 'list': '📝 ', 'info': 'ℹ ', 'bell': '🔔 ', 'bell_crossed': '🔕 ' , 'bed': '🛌 ', 'globe': '🌍 ', 'home': '🏠 ', 'silence': '🗣 ', 'yes': "✅ ", 'no': '❌ ', 'reset': '♻ ', 'check': '☑ ', 'uncheck':  '◼ '}
 
 def build_menu(stage, settings):
     markup = None
@@ -363,7 +363,7 @@ def on_chat_message(msg):
         send_message(chat_id, messages["location_received"] + " " + messages["actual_radius"].format(u_settings["radius"]), reply_markup=build_menu("main", u_settings))
     if content_type == 'text':
         text = msg['text']
-        print_log(u'[t] Text received: {}: "{}"'.format(tmp_nick,text))
+        print_log('[t] Text received: {}: "{}"'.format(tmp_nick,text))
         if (u_settings is None):
             send_message(chat_id, messages["greeting"], reply_markup=build_menu('location', u_settings))
         else:
@@ -483,7 +483,7 @@ def haversine(lon1, lat1, lon2, lat2):  # aaron-d from stackoverflow
 
 
 def print_log(s):
-    log = u'{}{}'.format(time.strftime('[%H:%M:%S] '),s)
+    log = '{}{}'.format(time.strftime('[%H:%M:%S] '),s)
     print(log)
     if log_to_file:
         log_queue.put(log)
@@ -529,7 +529,7 @@ while True:
         with open('{}/res/telegram_log.txt'.format(workdir), 'ab') as f:
             while not queue_to_file.empty():
                 message = queue_to_file.get()
-                f.write(queue_to_file.get() + u'\n')
+                f.write(queue_to_file.get() + '\n')
         del queue_to_file
     time.sleep(time_between_cycles)
     pokes = get_active_pokemon()
@@ -616,7 +616,7 @@ while True:
                             if max_notis_per_user_and_cycle > 0:
                                 received_notifications[user_id] = received_notifications[user_id] + 1
                             if log_notifications:
-                                print_log(u"[N] Notified user {} ({}) of {} {}m away!".format(us['nick'],us['id'], POKEMONS[pokeid],dist))
+                                print_log("[N] Notified user {} ({}) of {} {}m away!".format(us['nick'],us['id'], POKEMONS[pokeid],dist))
                         notified[chat_id].add(spawnid)
                     except BotWasBlockedError as err:
                         print_log("[!] Bot was blocked. Deactivated notifications for " + us['nick'] + " (" + str(us['id']) + ")")

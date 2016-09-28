@@ -24,6 +24,7 @@ import struct
 import os
 import ctypes
 import six
+import binascii
 
 static_seed = 0x61656632
 
@@ -33,7 +34,7 @@ def d2h(f):
     hex_str = hex(struct.unpack('<Q', struct.pack('<d', f))[0])[2:].replace('L','')
     if len(hex_str) % 2:
         hex_str = '0' + hex_str
-    return hex_str.decode('hex')
+    return binascii.a2b_hex(hex_str)
 
 
 def generateLocation1(authticket, lat, lng, alt):
@@ -60,5 +61,5 @@ def generate_signature(signature_plain, signature_lib):
     signature_lib.encrypt(signature_plain, len(signature_plain), iv, 32, None, ctypes.byref(output_size))
     output = (ctypes.c_ubyte * output_size.value)()
     signature_lib.encrypt(signature_plain, len(signature_plain), iv, 32, ctypes.byref(output), ctypes.byref(output_size))
-    signature = b''.join(list(map(lambda x: six.int2byte(x), output)))
+    signature = b''.join(list([six.int2byte(x) for x in output]))
     return signature
